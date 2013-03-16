@@ -1,5 +1,5 @@
 from django.db.models import ObjectDoesNotExist
-from django.db.models.fields.related import ForeignKey, ReverseSingleRelatedObjectDescriptor
+from django.db.models.fields.related import ForeignKey, ReverseSingleRelatedObjectDescriptor, OneToOneField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.generic import GenericForeignKey
 from django.contrib.sites.models import SITE_CACHE, Site
@@ -13,8 +13,13 @@ __all__ = [
 ]
 
 
-def generate_fk_class(name, retrieve_func, limit_to_model=None):
-    class CustomForeignKey(ForeignKey):
+def generate_fk_class(name, retrieve_func, limit_to_model=None, o2o=False):
+    if o2o:
+        parent_class = OneToOneField
+    else:
+        parent_class = ForeignKey
+
+    class CustomForeignKey(parent_class):
         def __init__(self, *args, **kwargs):
             if limit_to_model:
                 args = (limit_to_model,) + args
@@ -27,6 +32,8 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None):
         def south_field_triple(self):
             from south.modelsinspector import introspector
             args, kwargs = introspector(self)
+            if o2o:
+                return ('from django.db.models.fields.related.OneToOneField', args, kwargs)
             return ('django.db.models.fields.related.ForeignKey', args, kwargs)
 
     class CachedReverseSingleRelatedObjectDescriptor(ReverseSingleRelatedObjectDescriptor):
@@ -51,7 +58,7 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None):
     return CustomForeignKey
 
 CachedForeignKey = generate_fk_class('CachedForeignKey', lambda m, pk: get_cached_object(m, pk=pk))
-
+CachedOneToOneField = generate_fk_class('CachedOneToOneField', lambda m, pk: get_cached_object(m, pk=pk), o2o=True)
 
 def get_site(model, pk):
     try:
