@@ -33,7 +33,7 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None, o2o=False):
             from south.modelsinspector import introspector
             args, kwargs = introspector(self)
             if o2o:
-                return ('from django.db.models.fields.related.OneToOneField', args, kwargs)
+                return ('django.db.models.fields.related.OneToOneField', args, kwargs)
             return ('django.db.models.fields.related.ForeignKey', args, kwargs)
 
     class CachedReverseSingleRelatedObjectDescriptor(ReverseSingleRelatedObjectDescriptor):
