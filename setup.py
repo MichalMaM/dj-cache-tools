@@ -15,7 +15,7 @@ with open('README.rst') as readmefile:
 
 
 setup(
-    name='django-cache-tools',
+    name='dj-cache-tools',
     version=cache_tools.__versionstr__,
     description='Django cache tools originally developed for Ella CMS',
     long_description=long_description,
