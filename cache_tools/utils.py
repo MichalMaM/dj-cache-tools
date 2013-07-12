@@ -163,7 +163,7 @@ def get_cached_object_or_404(model, timeout=conf.CACHE_TIMEOUT, **kwargs):
     """
     try:
         return get_cached_object(model, timeout=timeout, **kwargs)
-    except ObjectDoesNotExist, e:
+    except ObjectDoesNotExist as e:
         raise Http404('Reason: %s' % str(e))
 
 
