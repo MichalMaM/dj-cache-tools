@@ -22,7 +22,7 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None, o2o=False):
     class CustomForeignKey(parent_class):
         def __init__(self, *args, **kwargs):
             if limit_to_model:
-                args = (limit_to_model,) + args
+                kwargs['to'] = limit_to_model
             super(CustomForeignKey, self).__init__(*args, **kwargs)
 
         def contribute_to_class(self, cls, name):
