@@ -24,7 +24,7 @@ setup(
     maintainer='Vitek Pliska',
     maintainer_email='vitek@creatiweb.cz',
     license='BSD',
-    url='https://github.com/ella/django-cache-tools',
+    url='https://bitbucket.org/creatiweb/django-cache-tools',
 
     packages=('cache_tools',),
     include_package_data=True,
