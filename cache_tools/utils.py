@@ -17,7 +17,11 @@ log = logging.getLogger('cache_tools.utils')
 @receiver(post_save)
 @receiver(post_delete)
 def invalidate_cache(sender, instance, **kwargs):
-    invalidate_cache_for_object(instance)
+    try:
+        invalidate_cache_for_object(instance)
+    except RuntimeError:
+        # in Django 1.7 and higher can be raised RuntimeError if sender is Migration model
+        log.debug('Can not invalidate cache for %s with pk %s' % (sender, getattr(instance, 'pk', None)), exc_info=True)
 
 
 def invalidate_cache_for_object(obj):
