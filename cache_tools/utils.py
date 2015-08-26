@@ -1,6 +1,7 @@
 from hashlib import md5
 import logging
 
+from django.utils import six
 from django.dispatch import receiver
 from django.db.models import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete
@@ -49,7 +50,7 @@ def _get_key(start, model, pk=None, version_key=False, **kwargs):
         version = cache.get(key + ':VER') or '0'
         return '%s:%s' % (key, version)
 
-    for key, val in kwargs.iteritems():
+    for key, val in six.iteritems(kwargs):
         if hasattr(val, 'pk'):
             kwargs[key] = val.pk
 
