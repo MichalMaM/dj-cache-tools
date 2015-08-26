@@ -2,7 +2,7 @@ from setuptools import setup
 import cache_tools
 
 install_requires = [
-    'Django>=1.3',
+    'Django>=1.4.2',
 ]
 
 tests_require = [
