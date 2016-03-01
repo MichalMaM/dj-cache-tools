@@ -1,6 +1,15 @@
 from django.db.models import ObjectDoesNotExist
-from django.db.models.fields.related import ForeignKey, ReverseSingleRelatedObjectDescriptor, OneToOneField
-from django.contrib.sites.models import SITE_CACHE
+from django.db.models.fields.related import ForeignKey, OneToOneField
+
+try:
+    from django.contrib.sites.models import SITE_CACHE
+except RuntimeError:
+    raise RuntimeError("Please add 'django.contrib.sites' to your INSTALLED_APPS.")
+
+try:
+    from django.db.models.fields.related import ForwardManyToOneDescriptor
+except ImportError:  # django < 1.9
+    from django.db.models.fields.related import ReverseSingleRelatedObjectDescriptor as ForwardManyToOneDescriptor
 
 try:
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -30,7 +39,7 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None, o2o=False):
 
         def contribute_to_class(self, cls, name):
             super(CustomForeignKey, self).contribute_to_class(cls, name)
-            setattr(cls, self.name, CachedReverseSingleRelatedObjectDescriptor(self))
+            setattr(cls, self.name, CachedForwardManyToOneDescriptor(self))
 
         def south_field_triple(self):
             from south.modelsinspector import introspector
@@ -39,7 +48,7 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None, o2o=False):
                 return ('django.db.models.fields.related.OneToOneField', args, kwargs)
             return ('django.db.models.fields.related.ForeignKey', args, kwargs)
 
-    class CachedReverseSingleRelatedObjectDescriptor(ReverseSingleRelatedObjectDescriptor):
+    class CachedForwardManyToOneDescriptor(ForwardManyToOneDescriptor):
         def __get__(self, instance, instance_type=None):
             if instance is None:
                 raise AttributeError("%s must be accessed via instance" % self.field.name)
