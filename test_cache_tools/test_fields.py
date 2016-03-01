@@ -1,5 +1,6 @@
 from nose import tools
 
+import django
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
@@ -78,7 +79,7 @@ class TestCachedForeignKey(CacheToolsTestCase):
 
         question = Question.objects.get(pk=question.pk)
 
-        with self.assertNumQueries(0):
+        with self.assertNumQueries(2 if django.VERSION[:2] < (1, 8) else 0):
             site = question.site
         tools.assert_equals(site, Site.objects.get_current())
 
