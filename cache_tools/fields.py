@@ -72,6 +72,7 @@ def generate_fk_class(name, retrieve_func, limit_to_model=None, o2o=False):
 CachedForeignKey = generate_fk_class('CachedForeignKey', lambda m, pk: get_cached_object(m, pk=pk))
 CachedOneToOneField = generate_fk_class('CachedOneToOneField', lambda m, pk: get_cached_object(m, pk=pk), o2o=True)
 
+
 def get_site(model, pk):
     try:
         return SITE_CACHE[pk]
@@ -88,7 +89,7 @@ class CachedGenericForeignKey(GenericForeignKey):
         # Fix for django 1.0 Admin Validation
         if instance is None:
             # TODO: hotfixed
-            #raise AttributeError, u"%s must be accessed via instance" % self.name
+            # raise AttributeError, u"%s must be accessed via instance" % self.name
             return
 
         try:
