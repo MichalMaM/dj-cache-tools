@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 
-from utils import create_question, create_choice
+from .utils import create_question, create_choice
 from .models import Choice, Question, ExtraQuestion
 from .cases import CacheToolsTestCase
 
