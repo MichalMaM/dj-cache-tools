@@ -20,8 +20,8 @@ log = logging.getLogger('cache_tools.utils')
 def invalidate_cache(sender, instance, **kwargs):
     try:
         invalidate_cache_for_object(instance)
-    except RuntimeError:
-        # in Django 1.7 and higher can be raised RuntimeError if sender is Migration model
+    except Exception:
+        # in Django 1.7 and higher can be raised errors in migration phase
         log.debug('Can not invalidate cache for %s with pk %s' % (sender, getattr(instance, 'pk', None)), exc_info=True)
 
 
